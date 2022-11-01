@@ -1,3 +1,8 @@
+# Submit idea
+
+1. Fill out [this form](https://docs.google.com/forms/d/e/1FAIpQLSetdQlN91ugLw5PhYHIMPcAVh9mOrjMfemI4u8orrUMaWRIkw/viewform?usp=sf_link)
+2. Or create a PR
+
 # App Ideas
 
 | Name                     | Description                                                                                         | Contact (optional)                          | Similar companies |
