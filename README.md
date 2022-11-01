@@ -17,6 +17,8 @@
 | AI Resumes               | Make a resume enhancer                                                                                                                  | [twitter](https://twitter.com/justinstorre) |                   |
 | Tattoo suggestions       | Give you tattoo suggestions                                                                                                             | [twitter](https://twitter.com/justinstorre) |                   |
 | Image DAG picker         | Given a prompt you are now given 4 images, and then you can keep doing img2img until you find the img you want, but visualized as a dag | [twitter](https://twitter.com/justinstorre) |                   |
+| Sentiment analysis       | Given a body of text, generate a sentiment analysis                                                                                     | [twitter](https://twitter.com/justinstorre) | grammarly         |
+| zsh autocompletion pilot | As you are typing in your terminal can you get suggestions of commands to run                                                           | [twitter](https://twitter.com/justinstorre) | warp              |
 
 Key:
 
