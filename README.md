@@ -14,7 +14,7 @@
 | SD Photoshop plugin      | Make a plugin where it can take the context of an image and fill in the blanks but within photoshop | [twitter](https://twitter.com/justinstorre) | getalpaca         |
 | Component Library for SD | Make a good react component library for interacting with SD                                         | [twitter](https://twitter.com/justinstorre) |                   |
 | Guess the prompt         | Make a global competition to guess the prompt for an image.                                         | [twitter](https://twitter.com/justinstorre) |                   |
-| Guess the prompt         | Make a global competition to guess the prompt for an image.                                         | [twitter](https://twitter.com/justinstorre) |                   |
+| AI Resumes               | Make a resume enhancer                                                                              | [twitter](https://twitter.com/justinstorre) |                   |
 
 Key:
 
