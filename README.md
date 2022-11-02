@@ -9,7 +9,7 @@
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----------------- |
 | Instagram for SD           | A place where users can generate images for free and share them with their friends                                                      | @chitalian         | playgroundai      |
 | Meme generator             | As the name suggests, this will combine LLM + SD to create memes. like [this](assets/meme-gen.png)                                      | @chitalian         |                   |
-| Whiteboard                 | As you are drawing an image it just continuously updates the an image at 50% opacity                                                    | @chitalian         |                   |
+| Whiteboard                 | As you are drawing an image it just continuously updates the an AI img2img image at 50% opacity                                         | @chitalian         |                   |
 | Whiteboard Multiplayer     | Same idea as above but just multiple people on one canvas                                                                               | @chitalian         |                   |
 | SD Photoshop plugin        | Make a plugin where it can take the context of an image and fill in the blanks but within photoshop                                     | @chitalian         | getalpaca         |
 | Component Library for SD   | Make a good react component library for interacting with SD                                                                             | @chitalian         |                   |
