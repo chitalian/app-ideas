@@ -1,10 +1,8 @@
-import * as dotenv from 'dotenv'
 import { Convert as EPConvert, EPFunction } from "./EPFunction"
 import { Convert as OAIConvert, OAICompletion } from "./OAICompletion"
 
-dotenv.config()
-let { EVERYPROMPT_API_KEY, OPENAI_API_KEY } = process.env
 
+const { EVERYPROMPT_API_KEY, OPENAI_API_KEY } = process.env
 
 const epBase = 'https://www.everyprompt.com/api/v0/functions'
 const epURL = (workspace: string, functionSlug: string) => `${epBase}/${workspace}/${functionSlug}`
@@ -19,7 +17,7 @@ export enum ModelType {
     ADA = 'text-ada-001'
 }
   
-async function getEveryPromptFunction(
+export async function getEveryPromptFunction(
     slug: string,
     team: string
 ): Promise<EPFunction | undefined> {
@@ -37,12 +35,12 @@ async function getEveryPromptFunction(
     if(response.status === 200) {
         let json = await response.json()
         return EPConvert.toEPFunction(json)
-    } else {
-        return undefined
     }
+    
+    return undefined
 }
 
-async function getOpenAICompletion(
+export async function getOpenAICompletion(
     prompt: string,
     model: ModelType,
     maxTokens: number,
@@ -73,7 +71,35 @@ async function getOpenAICompletion(
     if(response.status === 200) {
         let json = await response.json()
         return OAIConvert.toOAICompletion(json)
-    } else {
-        return undefined
     }
+
+    return undefined
+}
+
+export async function getCompletion(
+    promptSlug: string,
+    model: ModelType,
+    variables: string[]
+): Promise<OAICompletion | undefined> {
+    let epFunction = await getEveryPromptFunction(promptSlug, 'ai-app-ideas')
+    if(epFunction) {
+        let prompt = epFunction.template
+        variables.forEach((variable, index) => {
+            prompt = prompt.replace(`{{${index}}}`, variable)
+        })
+
+        let completion = await getOpenAICompletion(
+            prompt,
+            model,
+            epFunction.options.max_tokens,
+            epFunction.options.temperature,
+            epFunction.options.frequency_penalty,
+            epFunction.options.presence_penalty,
+            epFunction.options.stop,
+        )
+
+        return completion
+    }
+
+    return undefined
 }

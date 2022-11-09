@@ -2,7 +2,7 @@
 //
 //   import { Convert, OAICompletion } from "./file";
 //
-//   const oAICompletion = Convert.toOAICompletion(json);
+//   const OAICompletion = Convert.toOAICompletion(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
