@@ -55,7 +55,7 @@ export default function Home() {
                 name="description"
                 id="description"
                 className="shadow-sm  border block w-full resize-none border-t py-2 placeholder-gray-500 sm:text-sm p-5 focus:outline-none"
-                placeholder="ex: cooking, legal, etc.."
+                placeholder="ex: cooking, legal, chocolate, music, movies, etc.."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
