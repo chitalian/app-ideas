@@ -110,28 +110,31 @@ export default function Home() {
                   <span className="text-2xl">🥁</span> Here is the next big AI
                   startup idea
                 </div>
-                {ideas.reverse().map((idea) => {
-                  return (
-                    <div className="w-full" key={idea.name}>
-                      <div className="border w-full py-2 px-5 flex flex-row justify-between">
-                        <div>
-                          <div className="text-lg">{idea.name}</div>
-                          <div className="pl-5">{idea.description}</div>
+                {ideas
+                  .slice()
+                  .reverse()
+                  .map((idea) => {
+                    return (
+                      <div className="w-full" key={idea.name}>
+                        <div className="border w-full py-2 px-5 flex flex-row justify-between">
+                          <div>
+                            <div className="text-lg">{idea.name}</div>
+                            <div className="pl-5">{idea.description}</div>
+                          </div>
+                          <button
+                            className="hover:text-slate-500"
+                            onClick={() => {
+                              setIdeasSyncWithLocal((ideas) =>
+                                ideas.filter((i) => i.name !== idea.name)
+                              );
+                            }}
+                          >
+                            <TrashIcon className="h-4 " />
+                          </button>
                         </div>
-                        <button
-                          className="hover:text-slate-500"
-                          onClick={() => {
-                            setIdeasSyncWithLocal((ideas) =>
-                              ideas.filter((i) => i.name !== idea.name)
-                            );
-                          }}
-                        >
-                          <TrashIcon className="h-4 " />
-                        </button>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             )}
           </div>
