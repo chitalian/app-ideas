@@ -110,7 +110,7 @@ export default function Home() {
                   <span className="text-2xl">🥁</span> Here is the next big AI
                   startup idea
                 </div>
-                {ideas.map((idea) => {
+                {ideas.reverse().map((idea) => {
                   return (
                     <div className="w-full" key={idea.name}>
                       <div className="border w-full py-2 px-5 flex flex-row justify-between">
