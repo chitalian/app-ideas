@@ -1,11 +1,15 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { ImGithub } from "react-icons/im";
-import { TrashIcon } from "@heroicons/react/24/solid";
+import { HeartIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 interface Idea {
   name: string;
   description: string;
+  favorite: boolean;
+}
+function classNames(...args: string[]): string {
+  return args.filter(Boolean).join(" ");
 }
 
 export default function Home() {
@@ -13,9 +17,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [sort, setSort] = useState<"all" | "liked">("all");
   useEffect(() => {
     const localIdeas = localStorage.getItem("ideas");
-    console.log("LOCAL", localIdeas);
     if (localIdeas !== null) {
       setIdeas(JSON.parse(localIdeas));
     }
@@ -86,7 +90,11 @@ export default function Home() {
                       e.json().then((e) => {
                         setIdeasSyncWithLocal((ideas) =>
                           ideas.concat([
-                            { name: e.idea, description: e.description },
+                            {
+                              name: e.idea,
+                              description: e.description,
+                              favorite: false,
+                            },
                           ])
                         );
                       });
@@ -107,15 +115,42 @@ export default function Home() {
             {ideas.length > 0 && (
               <div className="w-full flex flex-col gap-3">
                 <div>
-                  <span className="text-2xl">🥁</span> Here is the next big AI
-                  startup idea
+                  <div>
+                    <span className="text-2xl">🥁</span> Here is the next big AI
+                    startup idea
+                  </div>
+                  <div className={"flex flex-row gap-5 mx-5 justify-center"}>
+                    <div
+                      className={
+                        sort === "all"
+                          ? "  bg-cyan-600 px-3 rounded-full text-gray-200 text-sm"
+                          : "bg-gray-200 px-3 rounded-full text-sm"
+                      }
+                      onClick={() => setSort("all")}
+                    >
+                      all
+                    </div>
+                    <div
+                      className={
+                        sort === "liked"
+                          ? " bg-cyan-600 px-3 rounded-full text-gray-200 text-sm"
+                          : " bg-gray-200 px-3 rounded-full text-sm"
+                      }
+                      onClick={() => setSort("liked")}
+                    >
+                      liked
+                    </div>
+                  </div>
                 </div>
                 {ideas
                   .slice()
                   .reverse()
+                  .filter(
+                    (i) => sort === "all" || (sort === "liked" && i.favorite)
+                  )
                   .map((idea) => {
                     return (
-                      <div className="w-full" key={idea.name}>
+                      <div className="w-full relative" key={idea.name}>
                         <div className="border w-full py-2 px-5 flex flex-row justify-between">
                           <div>
                             <div className="text-lg">{idea.name}</div>
@@ -124,14 +159,37 @@ export default function Home() {
                           <button
                             className="hover:text-slate-500"
                             onClick={() => {
-                              setIdeasSyncWithLocal((ideas) =>
-                                ideas.filter((i) => i.name !== idea.name)
-                              );
+                              setIdeasSyncWithLocal((ideas) => {
+                                return ideas.map((i) =>
+                                  i.name === idea.name
+                                    ? {
+                                        favorite: !i.favorite,
+                                        name: i.name,
+                                        description: i.description,
+                                      }
+                                    : i
+                                );
+                              });
                             }}
                           >
-                            <TrashIcon className="h-4 " />
+                            <HeartIcon
+                              className={classNames(
+                                "h-4 ",
+                                idea.favorite ? "fill-red-500 text-red-500" : ""
+                              )}
+                            />
                           </button>
                         </div>
+                        <button
+                          className="h-5 w-5 hover:text-slate-500 absolute -right-2 -top-2"
+                          onClick={() => {
+                            setIdeasSyncWithLocal((ideas) =>
+                              ideas.filter((i) => i.name !== idea.name)
+                            );
+                          }}
+                        >
+                          <XCircleIcon className="h-5 bg-white" />
+                        </button>
                       </div>
                     );
                   })}
