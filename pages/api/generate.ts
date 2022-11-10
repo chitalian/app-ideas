@@ -116,12 +116,20 @@ export default async function handler(
     res.status(404).json({ error: 'Not found.' })
   }
   */
+
+  // Really weird but if do not upper case the first letter it behaves totally differently...
+  keywords =
+    keywords === ""
+      ? ""
+      : keywords.charAt(0).toUpperCase().concat(keywords.slice(1));
+
+  console.log(`${prompt}\nTopic: ${keywords}\nIdea:`);
   let completion = await getOpenAICompletion(
     keywords === ""
       ? `${prompt}\nTopic:`
-      : `${prompt}\nTopic:${keywords}\nIdea:`,
+      : `${prompt}\nTopic: ${keywords}\nIdea:`,
     model,
-    100,
+    256,
     1.0,
     1.0,
     1.0,
@@ -129,6 +137,7 @@ export default async function handler(
   );
 
   if (completion) {
+    console.log(completion);
     const result = parseResults(
       keywords === "" ? completion : `Topic:${keywords}\nIdea:${completion}`
     );
