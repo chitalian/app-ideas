@@ -29,7 +29,7 @@ export default function Home() {
   }
 
   return (
-    <div className=" flex justify-between flex-col h-screen">
+    <div className="flex justify-between flex-col h-screen items-center">
       <header className="w-full">
         <Head>
           <title>AI App Ideas</title>
