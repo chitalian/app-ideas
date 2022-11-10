@@ -60,13 +60,13 @@ interface Result {
 function parseResults(
   completion: string
 ): [string, string, string] | undefined {
-  const topicSplit = completion.split("Topic: ");
+  const topicSplit = completion.split("Idea: ");
   if (topicSplit.length != 2) {
     return undefined;
   }
   const topic = topicSplit[0];
 
-  const descriptionSplit = completion.split("Description: ");
+  const descriptionSplit = topicSplit[1].split("Description: ");
   if (descriptionSplit.length != 2) {
     return undefined;
   }
@@ -84,8 +84,11 @@ export default async function handler(
     return;
   }
 
-  let { keywords, model } = req.body;
-
+  let { keywords, model }: { keywords: string; model: string } = req.body;
+  if (keywords.length > 256) {
+    res.status(404).json({ error: "MAX LEN" });
+    return;
+  }
   /*
   let epFunction = await getEveryPromptFunction('app-idea-generator-0oTaY4', 'ai-app-ideas')
   if(epFunction) {
@@ -113,8 +116,6 @@ export default async function handler(
     res.status(404).json({ error: 'Not found.' })
   }
   */
-  console.log("KEYBOARD", keywords);
-
   let completion = await getOpenAICompletion(
     keywords === ""
       ? `${prompt}\nTopic:`
@@ -128,10 +129,14 @@ export default async function handler(
   );
 
   if (completion) {
-    console.log(parseResults(completion));
-
-    let idea = completion.split("Description: ")[0].replace("Idea: ", "");
-    let description = completion.split("Description: ")[1].split("Idea: ")[0];
+    const result = parseResults(
+      keywords === "" ? completion : `Topic:${keywords}\nIdea:${completion}`
+    );
+    if (result === undefined) {
+      res.status(404).json({ error: "Bad response" });
+      return;
+    }
+    const [topic, idea, description] = result;
     res.status(200).json({ idea, description });
   } else {
     res.status(404).json({ error: "Not found." });

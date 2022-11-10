@@ -11,6 +11,7 @@ interface Idea {
 export default function Home() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   useEffect(() => {
     const localIdeas = localStorage.getItem("ideas");
@@ -58,6 +59,7 @@ export default function Home() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
+              <div>{error}</div>
             </div>
             <button
               className={
@@ -66,6 +68,7 @@ export default function Home() {
               disabled={loading}
               onClick={() => {
                 setLoading(true);
+                setError(undefined);
                 fetch("/api/generate", {
                   method: "POST",
                   headers: {
@@ -76,16 +79,27 @@ export default function Home() {
                     model: "text-davinci-002",
                     keywords: description,
                   }),
-                }).then((e) =>
-                  e.json().then((e) => {
+                })
+                  .then((e) => {
                     setLoading(false);
-                    setIdeasSyncWithLocal((ideas) =>
-                      ideas.concat([
-                        { name: e.idea, description: e.description },
-                      ])
-                    );
+                    if (e.status === 200) {
+                      e.json().then((e) => {
+                        setIdeasSyncWithLocal((ideas) =>
+                          ideas.concat([
+                            { name: e.idea, description: e.description },
+                          ])
+                        );
+                      });
+                    } else {
+                      console.error(e.text());
+                      setError("Had an issue parsing the result. Try again!");
+                    }
                   })
-                );
+                  .catch((e) => {
+                    console.error(e);
+                    setError("Had an issue parsing the result. Try again!");
+                    setLoading(false);
+                  });
               }}
             >
               {loading ? <LoadingSpinner /> : "Generate"}
