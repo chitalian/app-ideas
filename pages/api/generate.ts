@@ -125,9 +125,7 @@ export default async function handler(
 
   console.log(`${prompt}\nTopic: ${keywords}\nIdea:`);
   let completion = await getOpenAICompletion(
-    keywords === ""
-      ? `${prompt}\nTopic:`
-      : `${prompt}\nTopic: ${keywords}\nIdea:`,
+    keywords === "" ? `${prompt}\nTopic:` : `${prompt}\nTopic: ${keywords}`,
     model,
     256,
     1.0,
@@ -138,9 +136,7 @@ export default async function handler(
 
   if (completion) {
     console.log(completion);
-    const result = parseResults(
-      keywords === "" ? completion : `Topic:${keywords}\nIdea:${completion}`
-    );
+    const result = parseResults(completion);
     if (result === undefined) {
       res.status(404).json({ error: "Bad response" });
       return;
