@@ -89,16 +89,18 @@ export default async function handler(
     res.status(404).json({ error: "MAX LEN" });
     return;
   }
+  
   /*
   let epFunction = await getEveryPromptFunction('app-idea-generator-0oTaY4', 'ai-app-ideas')
   if(epFunction) {
     let prompt = epFunction.template
-    variables.forEach((variable, index) => {
-      prompt = prompt.replace(`{{${index}}}`, variable)
-    })
+    keywords =
+      keywords === ""
+        ? ""
+        : keywords.charAt(0).toUpperCase().concat(keywords.slice(1));
 
     let completion = await getOpenAICompletion(
-      prompt,
+      keywords === "" ? `${prompt}\nTopic:` : `${prompt}\nTopic: ${keywords}`,
       model,
       epFunction.options.max_tokens,
       epFunction.options.temperature,
@@ -108,7 +110,13 @@ export default async function handler(
     )
 
     if(completion) {
-      res.status(200).json(completion)
+      const result = parseResults(completion);
+      if (result === undefined) {
+        res.status(404).json({ error: "Bad response" });
+        return;
+      }
+      const [topic, idea, description] = result;
+      res.status(200).json({ idea, description });
     } else {
       res.status(404).json({ error: 'Not found.' })
     }
@@ -116,8 +124,10 @@ export default async function handler(
     res.status(404).json({ error: 'Not found.' })
   }
   */
+  
 
   // Really weird but if do not upper case the first letter it behaves totally differently...
+  
   keywords =
     keywords === ""
       ? ""
