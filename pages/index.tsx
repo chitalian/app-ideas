@@ -185,19 +185,15 @@ export default function Home() {
                           </button>
                           <a
                             className="hover:text-slate-500 absolute right-5"
-                            href={
-                              `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`
-                            }
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                              tweetText
+                            )}`}
                           >
-                            <CiTwitter
-                              className={classNames(
-                                "h-4 "
-                              )}
-                            />
+                            <CiTwitter className={classNames("h-4 ")} />
                           </a>
                         </div>
                         <button
-                          className="h-5 w-5 hover:text-slate-500 absolute -right-2 -top-2"
+                          className="h-5 w-5 hover:text-slate-500 absolute -left-2 -top-2"
                           onClick={() => {
                             setIdeasSyncWithLocal((ideas) =>
                               ideas.filter((i) => i.name !== idea.name)
