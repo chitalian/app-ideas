@@ -29,7 +29,7 @@ export default function Home() {
   }
 
   return (
-    <div className=" flex justify-between flex-col h-screen ">
+    <div className=" flex justify-between flex-col h-screen">
       <header className="w-full">
         <Head>
           <title>AI App Ideas</title>
@@ -37,18 +37,18 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className="flex flex-col w-full">
-          <h1 className="flex flex-row justify-end m-2 gap-2">
+          <h1 className="flex flex-row justify-end p-2 gap-2">
             <a href="https://github.com/chitalian/app-ideas">
               <ImGithub className="w-5 h-5" />
             </a>
           </h1>
-          <h1 className="text-center text-4xl m-8 w-full">AI App Ideas</h1>
+          <h1 className="text-center text-4xl p-8 w-full">AI App Ideas</h1>
         </div>
       </header>
-      <main className="mb-auto  m-10 max-w-5xl flex flex-col w-full gap-3">
+      <main className="mb-auto p-10 max-w-5xl flex flex-col w-full gap-3">
         <div className="flex justify-center">
-          <div className="w-3/4 flex flex-col items-center gap-5">
-            <div className="w-3/5 flex flex-col gap-2">
+          <div className="w-full md:w-3/4 flex flex-col items-center gap-5">
+            <div className="w-full md:w-3/5 flex flex-col gap-2">
               <div className="text-center">Give the AI some hints...</div>
               <textarea
                 rows={2}
