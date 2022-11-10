@@ -91,7 +91,7 @@ export default function Home() {
                         );
                       });
                     } else {
-                      console.error(e.text());
+                      e.text().then((e) => console.error(e));
                       setError("Had an issue parsing the result. Try again!");
                     }
                   })
