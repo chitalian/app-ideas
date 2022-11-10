@@ -1,9 +1,9 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { ImGithub } from "react-icons/im";
 import { CiTwitter } from "react-icons/ci";
-import { HeartIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import TwitterIcon from "../public/twitter.png";
+import { ImGithub } from "react-icons/im";
+import { HeartIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import {v4 as uuidv4} from 'uuid';
 
 interface Idea {
   name: string;
@@ -33,6 +33,30 @@ export default function Home() {
       return newIdeaList;
     });
   }
+
+  const getUser = () => {
+    // Get uuid from localstorage or create if not exists
+    let uuid = localStorage.getItem("user");
+    if (uuid === null) {
+      uuid = uuidv4().toString();
+      localStorage.setItem("user", uuid);
+    }
+    return uuid;
+  };
+
+  const trackEvent = (event: string, details: string) => {
+    fetch("/api/track", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        details: details,
+        event: event,
+        user: getUser()
+      }),
+    });
+  };
 
   return (
     <div className="flex justify-between flex-col h-screen items-center">
@@ -99,14 +123,19 @@ export default function Home() {
                             },
                           ])
                         );
+                        trackEvent("generation", e.idea + " - " + e.description);
                       });
                     } else {
-                      e.text().then((e) => console.error(e));
+                      e.text().then((e) => {
+                        trackEvent("parse_error", e)
+                        console.error(e)
+                      });
                       setError("Had an issue parsing the result. Try again!");
                     }
                   })
                   .catch((e) => {
                     console.error(e);
+                    trackEvent("parse_error", e.toString())
                     setError("Had an issue parsing the result. Try again!");
                     setLoading(false);
                   });
@@ -174,6 +203,7 @@ export default function Home() {
                                     : i
                                 );
                               });
+                              trackEvent("favourited", idea.name + " - " + idea.description);
                             }}
                           >
                             <HeartIcon

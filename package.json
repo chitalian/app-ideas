@@ -16,14 +16,18 @@
     "@vercel/analytics": "^0.1.4",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.2",
+    "mixpanel": "^0.17.0",
     "next": "13.0.2",
     "promptzero": "^1.0.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.6.0",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/mixpanel": "^2.14.4",
+    "@types/uuid": "^8.3.4",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.18",
     "tailwindcss": "^3.2.2"
