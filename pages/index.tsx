@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { CiTwitter } from "react-icons/ci";
 import { ImGithub } from "react-icons/im";
 import { HeartIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface Idea {
   name: string;
@@ -40,6 +40,9 @@ export default function Home() {
     if (uuid === null) {
       uuid = uuidv4().toString();
       localStorage.setItem("user", uuid);
+      trackEvent("new_user", uuid);
+    } else {
+      trackEvent("login", uuid);
     }
     return uuid;
   };
@@ -53,7 +56,7 @@ export default function Home() {
       body: JSON.stringify({
         details: details,
         event: event,
-        user: getUser()
+        user: getUser(),
       }),
     });
   };
@@ -123,19 +126,22 @@ export default function Home() {
                             },
                           ])
                         );
-                        trackEvent("generation", e.idea + " - " + e.description);
+                        trackEvent(
+                          "generation",
+                          e.idea + " - " + e.description
+                        );
                       });
                     } else {
                       e.text().then((e) => {
-                        trackEvent("parse_error", e)
-                        console.error(e)
+                        trackEvent("parse_error", e);
+                        console.error(e);
                       });
                       setError("Had an issue parsing the result. Try again!");
                     }
                   })
                   .catch((e) => {
                     console.error(e);
-                    trackEvent("parse_error", e.toString())
+                    trackEvent("parse_error", e.toString());
                     setError("Had an issue parsing the result. Try again!");
                     setLoading(false);
                   });
@@ -203,7 +209,10 @@ export default function Home() {
                                     : i
                                 );
                               });
-                              trackEvent("favourited", idea.name + " - " + idea.description);
+                              trackEvent(
+                                "favourited",
+                                idea.name + " - " + idea.description
+                              );
                             }}
                           >
                             <HeartIcon
