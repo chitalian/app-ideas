@@ -89,7 +89,7 @@ export default async function handler(
     res.status(404).json({ error: "MAX LEN" });
     return;
   }
-  
+
   /*
   let epFunction = await getEveryPromptFunction('app-idea-generator-0oTaY4', 'ai-app-ideas')
   if(epFunction) {
@@ -124,10 +124,9 @@ export default async function handler(
     res.status(404).json({ error: 'Not found.' })
   }
   */
-  
 
   // Really weird but if do not upper case the first letter it behaves totally differently...
-  
+
   keywords =
     keywords === ""
       ? ""
