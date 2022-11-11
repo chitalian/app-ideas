@@ -141,6 +141,10 @@ export default function Home() {
                     trackEvent("parse_error", e.toString());
                     setError("Had an issue parsing the result. Try again!");
                     setLoading(false);
+
+
+
+                    
                   });
               }}
             >
