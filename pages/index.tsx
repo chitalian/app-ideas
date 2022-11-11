@@ -21,6 +21,7 @@ export default function Home() {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [sort, setSort] = useState<"all" | "liked">("all");
   useEffect(() => {
+    trackEvent("login", getUser());
     const localIdeas = localStorage.getItem("ideas");
     if (localIdeas !== null) {
       setIdeas(JSON.parse(localIdeas));
@@ -40,9 +41,6 @@ export default function Home() {
     if (uuid === null) {
       uuid = uuidv4().toString();
       localStorage.setItem("user", uuid);
-      trackEvent("new_user", uuid);
-    } else {
-      trackEvent("login", uuid);
     }
     return uuid;
   };
