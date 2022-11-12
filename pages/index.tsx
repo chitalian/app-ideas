@@ -259,8 +259,8 @@ function IdeaCard({
     <div className="w-full relative" key={idea.uuid}>
       <div className="border w-full py-2 px-5 flex flex-row justify-between">
         <div>
-          <div className="text-lg flex flex-row">
-            {idea.name} askljlkdafjll slk{" "}
+          <div className="text-lg flex flex-row justify-between">
+            {idea.name}
             <CardActions
               setIdeasSyncWithLocal={setIdeasSyncWithLocal}
               idea={idea}
