@@ -258,8 +258,8 @@ function IdeaCard({
   return (
     <div className="w-full relative" key={idea.uuid}>
       <div className="border w-full py-2 px-5 flex flex-row justify-between">
-        <div>
-          <div className="text-lg flex flex-row justify-between">
+        <div className=" w-full">
+          <div className="text-lg flex flex-row justify-between w-full">
             {idea.name}
             <CardActions
               setIdeasSyncWithLocal={setIdeasSyncWithLocal}
