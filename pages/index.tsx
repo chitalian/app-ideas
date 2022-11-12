@@ -6,10 +6,11 @@ import { HeartIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { v4 as uuidv4 } from "uuid";
 
 interface Idea {
-  uuid: string;
-  name: string;
   description: string;
   favorite: boolean;
+  name: string;
+  topic: string;
+  uuid: string;
 }
 function classNames(...args: string[]): string {
   return args.filter(Boolean).join(" ");
@@ -53,10 +54,11 @@ export default function Home() {
         ideas.map((i) => {
           if (i.uuid === undefined) {
             return {
-              uuid: uuidv4(),
-              name: i.name,
               description: i.description,
               favorite: i.favorite,
+              name: i.name,
+              topic: i.topic,
+              uuid: uuidv4(),
             };
           } else {
             return i;
@@ -65,13 +67,14 @@ export default function Home() {
       );
     }
   }, []);
-  function setIdeasSyncWithLocal(fn: (ideas: Idea[]) => Idea[]) {
+
+  const setIdeasSyncWithLocal = (fn: (ideas: Idea[]) => Idea[]) => {
     setIdeas((ideas) => {
       const newIdeaList = fn(ideas);
       localStorage.setItem("ideas", JSON.stringify(newIdeaList));
       return newIdeaList;
     });
-  }
+  };
 
   return (
     <div className="flex justify-between flex-col h-screen items-center">
@@ -121,8 +124,9 @@ export default function Home() {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    model: "text-davinci-002",
+                    favourites: ideas.filter((idea) => idea.favorite),
                     keywords: description,
+                    model: "text-davinci-002",
                   }),
                 })
                   .then((e) => {
@@ -132,10 +136,11 @@ export default function Home() {
                         setIdeasSyncWithLocal((ideas) =>
                           ideas.concat([
                             {
-                              uuid: uuidv4(),
-                              name: e.idea,
                               description: e.description,
                               favorite: false,
+                              name: e.idea,
+                              topic: e.topic,
+                              uuid: uuidv4(),
                             },
                           ])
                         );
@@ -302,10 +307,11 @@ function CardActions({
             return ideas.map((i) =>
               i.name === idea.name && i.description === idea.description
                 ? {
-                    favorite: !i.favorite,
-                    uuid: i.uuid,
-                    name: i.name,
                     description: i.description,
+                    favorite: !i.favorite,
+                    name: i.name,
+                    topic: i.topic,
+                    uuid: i.uuid,
                   }
                 : i
             );

@@ -26,7 +26,11 @@ export default async function handler(
     event,
     user,
   }: { details: string; event: string; user: string } = req.body;
-  mixpanel.track(event, { distinct_id: user, details: details });
+  mixpanel.track(event, { distinct_id: user, details: details }, (event) => {
+    if (event) {
+      console.log(event);
+    }
+  });
 
   res.status(200).json({ success: true });
 }

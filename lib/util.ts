@@ -1,6 +1,3 @@
-import { Convert as EPConvert, EPFunction } from "./EPFunction";
-import { Convert as OAIConvert, OAICompletion } from "./OAICompletion";
-
 const { EVERYPROMPT_API_KEY, OPENAI_API_KEY } = process.env;
 
 const epBase = "https://www.everyprompt.com/api/v0/functions";
@@ -10,26 +7,6 @@ const epURL = (workspace: string, functionSlug: string) =>
 const oaiBase = "https://api.openai.com/v1";
 const oaiURL = (endpoint: string, model: string) =>
   `${oaiBase}/engines/${model}/${endpoint}`;
-
-export async function getEveryPromptFunction(
-  slug: string,
-  team: string
-): Promise<EPFunction | undefined> {
-  let response = await fetch(epURL(team, slug), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${EVERYPROMPT_API_KEY}`,
-    },
-  });
-
-  if (response.status === 200) {
-    let json = await response.json();
-    return EPConvert.toEPFunction(json);
-  }
-
-  return undefined;
-}
 
 export async function getOpenAICompletion(
   prompt: string,

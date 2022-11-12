@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { OAICompletion } from "../../lib/OAICompletion";
-import { getEveryPromptFunction, getOpenAICompletion } from "../../lib/util";
+import { getOpenAICompletion } from "../../lib/util";
 
 const prompt = `You are brainstorming some new awesome AI app ideas following the generative ai hype wave of 2022. What's the best idea for an app to use a combination of LLM's (large language models for text generation), image models (SD/stable diffusion, for image generation) or other modalities.
 
@@ -53,7 +52,14 @@ interface Error {
 }
 
 interface Result {
+  description: string;
   idea: string;
+  topic: string;
+}
+
+interface Idea {
+  topic: string | undefined;
+  name: string;
   description: string;
 }
 
@@ -64,14 +70,14 @@ function parseResults(
   if (topicSplit.length != 2) {
     return undefined;
   }
-  const topic = topicSplit[0];
+  const topic = topicSplit[0].trim();
 
   const descriptionSplit = topicSplit[1].split("Description: ");
   if (descriptionSplit.length != 2) {
     return undefined;
   }
-  const idea = descriptionSplit[0].replace("Idea:", "");
-  const description = descriptionSplit[1];
+  const idea = descriptionSplit[0].replace("Idea:", "").trim();
+  const description = descriptionSplit[1].trim();
   return [topic, idea, description];
 }
 
@@ -84,57 +90,58 @@ export default async function handler(
     return;
   }
 
-  let { keywords, model }: { keywords: string; model: string } = req.body;
+  let {
+    favourites,
+    keywords,
+    model,
+  }: { favourites: Idea[]; keywords: string; model: string } = req.body;
   if (keywords.length > 256) {
     res.status(404).json({ error: "MAX LEN" });
     return;
   }
 
-  /*
-  let epFunction = await getEveryPromptFunction('app-idea-generator-0oTaY4', 'ai-app-ideas')
-  if(epFunction) {
-    let prompt = epFunction.template
-    keywords =
-      keywords === ""
-        ? ""
-        : keywords.charAt(0).toUpperCase().concat(keywords.slice(1));
-
-    let completion = await getOpenAICompletion(
-      keywords === "" ? `${prompt}\nTopic:` : `${prompt}\nTopic: ${keywords}`,
-      model,
-      epFunction.options.max_tokens,
-      epFunction.options.temperature,
-      epFunction.options.frequency_penalty,
-      epFunction.options.presence_penalty,
-      epFunction.options.stop,
-    )
-
-    if(completion) {
-      const result = parseResults(completion);
-      if (result === undefined) {
-        res.status(404).json({ error: "Bad response" });
-        return;
-      }
-      const [topic, idea, description] = result;
-      res.status(200).json({ idea, description });
-    } else {
-      res.status(404).json({ error: 'Not found.' })
-    }
-  } else {
-    res.status(404).json({ error: 'Not found.' })
-  }
-  */
-
   // Really weird but if do not upper case the first letter it behaves totally differently...
-
   keywords =
     keywords === ""
       ? ""
       : keywords.charAt(0).toUpperCase().concat(keywords.slice(1));
 
-  console.log(`${prompt}\nTopic: ${keywords}\nIdea:`);
+  // Keep 5 < favourites < 10
+  if (favourites.length > 10) {
+    favourites = favourites.slice(0, 10);
+  } else if (favourites.length < 5) {
+    favourites = [];
+  }
+
+  // Backfill random topics
+  favourites = favourites.map((favourite) =>
+    favourite.topic === undefined
+      ? {
+          topic: "random",
+          name: favourite.name,
+          description: favourite.description,
+        }
+      : favourite
+  );
+
+  const favouritesString = favourites
+    .map((favourite) => {
+      return `Topic: ${favourite.topic?.trim()}\nIdea: ${favourite.name?.trim()}\nDescription: ${favourite.description?.trim()}`;
+    })
+    .join("\n");
+
+  let fullPrompt =
+    favourites.length > 0 ? `${prompt}\n${favouritesString}` : prompt;
+
+  fullPrompt =
+    keywords === ""
+      ? `${fullPrompt}\nTopic:`
+      : `${fullPrompt}\nTopic: ${keywords}\n`;
+
+  console.log(fullPrompt);
+
   let completion = await getOpenAICompletion(
-    keywords === "" ? `${prompt}\nTopic:` : `${prompt}\nTopic: ${keywords}`,
+    fullPrompt,
     model,
     256,
     1.0,
@@ -144,14 +151,13 @@ export default async function handler(
   );
 
   if (completion) {
-    console.log(completion);
     const result = parseResults(completion);
     if (result === undefined) {
       res.status(404).json({ error: "Bad response" });
       return;
     }
     const [topic, idea, description] = result;
-    res.status(200).json({ idea, description });
+    res.status(200).json({ description, idea, topic });
   } else {
     res.status(404).json({ error: "Not found." });
   }
