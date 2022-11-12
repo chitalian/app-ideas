@@ -2,51 +2,68 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getOpenAICompletion } from "../../lib/util";
 
-const prompt = `You are brainstorming some new awesome AI app ideas following the generative ai hype wave of 2022. What's the best idea for an app to use a combination of LLM's (large language models for text generation), image models (SD/stable diffusion, for image generation) or other modalities.
+const prompt = `You are brainstorming some new awesome AI app ideas following the generative ai hype wave of 2022. What's the best idea for an app to use a combination of LLM's (large language models for text generation), image models (stable diffusion, for image generation) or other modalities.
 
-Topic: Images, Social Network
-Idea: Instagram for SD
-Description: A place where users can generate images for free and share them with their friends
-Topic: Memes, Images
-Idea: Meme generator
-Description: As the name suggests, this will combine LLM + SD to create memes
-Topic: Images, Fun, Playground
-Idea: Whiteboard
-Description: As you are drawing an image it just continuously updates the an AI img2img image at 50% opacity
-Topic: Images, Collaboration, Fun, Playground
-Idea: Whiteboard Multiplayer
-Description: As you are drawing an image it just continuously updates the an AI img2img image at 50% opacity but multiple people are using one canvas
-Topic: Images, Photoshop, Playground
-Idea: SD Photoshop plugin
-Description: Make a plugin where it can take the context of an image and fill in the blanks but within photoshop
-Topic: Technical, Software, Tools
-Idea: Component Library for SD
-Description: Make a good react component library for interacting with SD
-Topic: Game, Fun, Competition
-Idea: Guess the prompt
-Description: Make a global competition to guess the prompt for an image.
-Topic: Business
-Idea: AI Resumes
-Description: Make a resume enhancer
-Topic: Art
-Idea: Tattoo suggestions
-Description: Give you tattoo suggestions using SD
-Topic: Tools, Playground
-Idea: Image DAG picker
-Description: Given a prompt you are now given 4 images, and then you can keep doing img2img until you find the img you want, but visualized as a dag
-Topic: Software, Psychology
-Idea: Sentiment analysis
-Description: Given a body of text, generate a sentiment analysis
-Topic: Software, Engineering
-Idea: zsh autocompletion pilot
-Description: As you are typing in your terminal can you get suggestions of commands to run
-Topic: Education
-Idea: text highlight an explain
-Description: Select any text and explain it
-Topic: Software, Developer
-Idea: FauxPilot VSCode extension
-Description: Build a good extension for Faux Pilot, an open-source alternative to GitHub CoPilot`;
+`;
 
+const defaultIdeas: Idea[] = [
+  {
+    topic: "Images, Social Network",
+    name: "Instagram for Stable Diffusion",
+    description:
+      "A place where users can generate images for free and share them with their friends",
+  },
+  {
+    topic: "Memes, Images",
+    name: "Meme generator",
+    description:
+      "As the name suggests, this will combine LLM + Stable Diffusion to create memes",
+  },
+  {
+    topic: "Images, Fun, Playground",
+    name: "Whiteboard",
+    description:
+      "As you are drawing an image it just continuously updates the an AI img2img image at 50% opacity",
+  },
+  {
+    topic: "Images, Collaboration, Fun, Playground",
+    name: "Whiteboard Multiplayer",
+    description:
+      "As you are drawing an image it just continuously updates the an AI img2img image at 50% opacity but multiple people are using one canvas",
+  },
+  {
+    topic: "Images, Photoshop, Playground",
+    name: "Stable Diffusion Photoshop plugin",
+    description:
+      "Make a plugin where it can take the context of an image and fill in the blanks but within photoshop",
+  },
+  {
+    topic: "Technical, Software, Tools",
+    name: "Component Library for Stable Diffusion",
+    description:
+      "Make a good react component library for interacting with Stable Diffusion",
+  },
+  {
+    topic: "Game, Fun, Competition",
+    name: "Guess the prompt",
+    description: "Make a global competition to guess the prompt for an image.",
+  },
+  {
+    topic: "Business",
+    name: "AI Resumes",
+    description: "Make a resume enhancer",
+  },
+  {
+    topic: "Art, Tattoo, Cool",
+    name: "Tattoo suggestions",
+    description: "Give you tattoo suggestions using Stable Diffusion",
+  },
+  {
+    topic: "Software, Psychology",
+    name: "Sentiment analysis",
+    description: "Given a body of text, generate a sentiment analysis",
+  },
+];
 interface Error {
   error: string;
 }
@@ -110,7 +127,7 @@ export default async function handler(
   if (favourites.length > 10) {
     favourites = favourites.slice(0, 10);
   } else if (favourites.length < 5) {
-    favourites = [];
+    favourites = defaultIdeas;
   }
 
   // Backfill random topics
@@ -130,8 +147,7 @@ export default async function handler(
     })
     .join("\n");
 
-  let fullPrompt =
-    favourites.length > 0 ? `${prompt}\n${favouritesString}` : prompt;
+  let fullPrompt = `${prompt}\n${favouritesString}`;
 
   fullPrompt =
     keywords === ""
