@@ -74,7 +74,7 @@ export default function Home() {
       localStorage.setItem("ideas", JSON.stringify(newIdeaList));
       return newIdeaList;
     });
-  }
+  };
 
   return (
     <div className="flex justify-between flex-col h-screen items-center">
@@ -307,12 +307,12 @@ function CardActions({
             return ideas.map((i) =>
               i.name === idea.name && i.description === idea.description
                 ? {
-                  description: i.description,
-                  favorite: !i.favorite,
-                  name: i.name,
-                  topic: i.topic,
-                  uuid: i.uuid
-                }
+                    description: i.description,
+                    favorite: !i.favorite,
+                    name: i.name,
+                    topic: i.topic,
+                    uuid: i.uuid,
+                  }
                 : i
             );
           });
