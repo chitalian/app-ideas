@@ -54,10 +54,11 @@ export default function Home() {
         ideas.map((i) => {
           if (i.uuid === undefined) {
             return {
-              uuid: uuidv4(),
-              name: i.name,
               description: i.description,
               favorite: i.favorite,
+              name: i.name,
+              topic: i.topic,
+              uuid: uuidv4(),
             };
           } else {
             return i;
@@ -306,10 +307,11 @@ function CardActions({
             return ideas.map((i) =>
               i.name === idea.name && i.description === idea.description
                 ? {
-                  favorite: !i.favorite,
-                  uuid: i.uuid,
-                  name: i.name,
                   description: i.description,
+                  favorite: !i.favorite,
+                  name: i.name,
+                  topic: i.topic,
+                  uuid: i.uuid
                 }
                 : i
             );
