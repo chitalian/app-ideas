@@ -84,6 +84,62 @@ export default function Home() {
       return newIdeaList;
     });
   };
+  const generateNewIdea = (retry: number) => {
+    if (retry <= 0) {
+      setLoading(false);
+      setError(
+        "Your hints seem to be confusing the AI, try with a different hint maybe?"
+      );
+      return;
+    }
+
+    fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        favourites: ideas.filter((idea) => idea.favorite),
+        keywords: description,
+        model: "text-davinci-002",
+      }),
+    })
+      .then((e) => {
+        if (e.status === 200) {
+          setLoading(false);
+          e.json().then((e) => {
+            setIdeasSyncWithLocal((ideas) =>
+              ideas.concat([
+                {
+                  description: e.description,
+                  favorite: false,
+                  name: e.idea,
+                  topic: e.topic,
+                  uuid: uuidv4(),
+                },
+              ])
+            );
+            trackEvent("generation", e.idea + " - " + e.description);
+          });
+        } else {
+          e.text().then((e) => {
+            trackEvent("parse_error", e);
+            console.error(e);
+          });
+          setError(`Oops! had an issue dont worry! I am retrying for you`);
+          generateNewIdea(retry - 1);
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        trackEvent("parse_error", e.toString());
+        setError(
+          "Had some serious issue! Please contact us on discord with a screenshot of our console"
+        );
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="flex justify-between flex-col h-screen items-center">
@@ -129,52 +185,7 @@ export default function Home() {
               onClick={() => {
                 setLoading(true);
                 setError(undefined);
-                fetch("/api/generate", {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    favourites: ideas.filter((idea) => idea.favorite),
-                    keywords: description,
-                    model: "text-davinci-002",
-                  }),
-                })
-                  .then((e) => {
-                    setLoading(false);
-                    if (e.status === 200) {
-                      e.json().then((e) => {
-                        setIdeasSyncWithLocal((ideas) =>
-                          ideas.concat([
-                            {
-                              description: e.description,
-                              favorite: false,
-                              name: e.idea,
-                              topic: e.topic,
-                              uuid: uuidv4(),
-                            },
-                          ])
-                        );
-                        trackEvent(
-                          "generation",
-                          e.idea + " - " + e.description
-                        );
-                      });
-                    } else {
-                      e.text().then((e) => {
-                        trackEvent("parse_error", e);
-                        console.error(e);
-                      });
-                      setError("Had an issue parsing the result. Try again!");
-                    }
-                  })
-                  .catch((e) => {
-                    console.error(e);
-                    trackEvent("parse_error", e.toString());
-                    setError("Had an issue parsing the result. Try again!");
-                    setLoading(false);
-                  });
+                generateNewIdea(3);
               }}
             >
               {loading ? <LoadingSpinner /> : "Generate"}
