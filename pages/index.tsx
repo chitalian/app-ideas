@@ -6,9 +6,10 @@ import { HeartIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { v4 as uuidv4 } from "uuid";
 
 interface Idea {
-  name: string;
   description: string;
   favorite: boolean;
+  name: string;
+  topic: string;
 }
 function classNames(...args: string[]): string {
   return args.filter(Boolean).join(" ");
@@ -26,7 +27,8 @@ export default function Home() {
       setIdeas(JSON.parse(localIdeas));
     }
   }, []);
-  function setIdeasSyncWithLocal(fn: (ideas: Idea[]) => Idea[]) {
+
+  const setIdeasSyncWithLocal = (fn: (ideas: Idea[]) => Idea[]) => {
     setIdeas((ideas) => {
       const newIdeaList = fn(ideas);
       localStorage.setItem("ideas", JSON.stringify(newIdeaList));
@@ -106,8 +108,9 @@ export default function Home() {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    model: "text-davinci-002",
+                    favourites: ideas.filter((idea) => idea.favorite),
                     keywords: description,
+                    model: "text-davinci-002",
                   }),
                 })
                   .then((e) => {
@@ -117,9 +120,10 @@ export default function Home() {
                         setIdeasSyncWithLocal((ideas) =>
                           ideas.concat([
                             {
-                              name: e.idea,
                               description: e.description,
                               favorite: false,
+                              name: e.idea,
+                              topic: e.topic,
                             },
                           ])
                         );
@@ -199,10 +203,11 @@ export default function Home() {
                                 return ideas.map((i) =>
                                   i.name === idea.name
                                     ? {
-                                        favorite: !i.favorite,
-                                        name: i.name,
-                                        description: i.description,
-                                      }
+                                      description: i.description,
+                                      favorite: !i.favorite,
+                                      name: i.name,
+                                      topic: i.topic,
+                                    }
                                     : i
                                 );
                               });
