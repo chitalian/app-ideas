@@ -200,6 +200,7 @@ export default function Home() {
                   )
                   .map((idea) => (
                     <IdeaCard
+                      key={idea.uuid}
                       idea={idea}
                       setIdeasSyncWithLocal={setIdeasSyncWithLocal}
                     />
