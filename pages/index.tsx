@@ -56,6 +56,7 @@ export default function Home() {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [sort, setSort] = useState<"all" | "liked">("all");
   useEffect(() => {
+    trackEvent("login", getUser());
     const localIdeas = localStorage.getItem("ideas");
     if (localIdeas !== null) {
       setIdeas(JSON.parse(localIdeas));
