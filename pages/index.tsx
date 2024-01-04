@@ -103,7 +103,6 @@ export default function Home() {
       body: JSON.stringify({
         favourites: ideas.filter((idea) => idea.favorite),
         keywords: description,
-        model: "text-davinci-002",
       }),
     })
       .then((e) => {
