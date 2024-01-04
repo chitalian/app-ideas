@@ -107,11 +107,8 @@ export default async function handler(
     return;
   }
 
-  let {
-    favourites,
-    keywords,
-    model,
-  }: { favourites: Idea[]; keywords: string; model: string } = req.body;
+  let { favourites, keywords }: { favourites: Idea[]; keywords: string } =
+    req.body;
   if (keywords.length > 256) {
     res.status(404).json({ error: "MAX LEN" });
     return;
@@ -158,7 +155,7 @@ export default async function handler(
 
   let completion = await getOpenAICompletion(
     fullPrompt,
-    model,
+    "gpt-3.5-turbo-instruct",
     256,
     1.0,
     1.0,

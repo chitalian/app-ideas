@@ -1,8 +1,4 @@
-const { EVERYPROMPT_API_KEY, OPENAI_API_KEY } = process.env;
-
-const epBase = "https://www.everyprompt.com/api/v0/functions";
-const epURL = (workspace: string, functionSlug: string) =>
-  `${epBase}/${workspace}/${functionSlug}`;
+const { OPENAI_API_KEY } = process.env;
 
 const oaiBase = "https://api.openai.com/v1";
 const oaiURL = (endpoint: string, model: string) =>
